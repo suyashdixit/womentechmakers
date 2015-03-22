@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Info windows</title>
+    <style>
+      html, body{
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+        font-family: 'Roboto', sans-serif;
+      }
+      .myfont{
+        font-family: 'Roboto', sans-serif;
+      }
+
+      .mainheader_bw{
+          background: silver;
+          color: rgb(77, 77, 77);
+          padding-left: 30px;
+      }
+
+      .mainheader_middle{
+          background: rgb(218, 226, 213);
+          color: color: rgb(116, 136, 147);
+          padding-left: 30px;
+      }
+
+      .mainheader_mordern{
+          background: rgb(58, 164, 207);
+          color: rgb(221, 226, 219);
+          padding-left: 30px;
+
+      }
+
+ 
+      
+
+    </style>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <script>
+
+
+var blackWhiteStyleArray=[
+  {
+      "featureType": "road.highway",
+      "elementType": "geometry",
+      "stylers": [
+        { "saturation": -100 },
+        { "lightness": -8 },
+        { "gamma": 1.18 }
+      ]
+  }, {
+      "featureType": "road.arterial",
+      "elementType": "geometry",
+      "stylers": [
+        { "saturation": -100 },
+        { "gamma": 1 },
+        { "lightness": -24 }
+      ]
+  }, {
+      "featureType": "poi",
+      "elementType": "geometry",
+      "stylers": [
+        { "saturation": -100 }
+      ]
+  }, {
+      "featureType": "administrative",
+      "stylers": [
+        { "saturation": -100 }
+      ]
+  }, {
+      "featureType": "transit",
+      "stylers": [
+        { "saturation": -100 }
+      ]
+  }, {
+      "featureType": "water",
+      "elementType": "geometry.fill",
+      "stylers": [
+        { "saturation": -100 }
+      ]
+  }, {
+      "featureType": "road",
+      "stylers": [
+        { "saturation": -100 }
+      ]
+  }, {
+      "featureType": "administrative",
+      "stylers": [
+        { "saturation": -100 }
+      ]
+  }, {
+      "featureType": "landscape",
+      "stylers": [
+        { "saturation": -100 }
+      ]
+  }, {
+      "featureType": "poi",
+      "stylers": [
+        { "saturation": -100 }
+      ]
+  }, {
+  }
+            ];
+
+var blackWhiteStyle = new google.maps.StyledMapType(blackWhiteStyleArray,{name: "BlackWhiteMap"});
+
+
+var middleAgeArray = [
+    {
+        "stylers": [
+            {
+                "saturation": -45
+            },
+            {
+                "lightness": 13
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#8fa7b3"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "color": "#667780"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#333333"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {
+                "color": "#8fa7b3"
+            },
+            {
+                "gamma": 2
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#a3becc"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "color": "#7a8f99"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#555555"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#a3becc"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "color": "#7a8f99"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#555555"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#bbd9e9"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#525f66"
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {
+                "color": "#bbd9e9"
+            },
+            {
+                "gamma": 2
+            }
+        ]
+    },
+    {
+        "featureType": "transit.line",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#a3aeb5"
+            }
+        ]
+    }
+];
+var middleAgeStyle = new google.maps.StyledMapType(middleAgeArray,{name: "Middle AgeMap"});
+
+var mordernAgeArray = [
+    {
+        "featureType": "landscape.man_made",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "color": "#f7f1df"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.natural",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "color": "#d0e3b4"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.natural.terrain",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.business",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.medical",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "color": "#fbd3da"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.park",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "color": "#bde6ab"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "labels",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#ffe15f"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "geometry.stroke",
+        "stylers": [
+            {
+                "color": "#efd151"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "black"
+            }
+        ]
+    },
+    {
+        "featureType": "transit.station.airport",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#cfb2db"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "geometry",
+        "stylers": [
+            {
+                "color": "#a2daf2"
+            }
+        ]
+    }
+];
+var mordernAgeStyle = new google.maps.StyledMapType(mordernAgeArray,{name: "MordernAgeMap"});
+
+
+var marker;
+var map;
+var travelled = 0;
+var infowindow;
+
+  var details = [
+  {'name': 'Ada Lovelace', 'text': 'The daughter of famed poet Lord Byron, Augusta Ada Byron, Countess of Lovelace—better known as "Ada Lovelace"—was born in London. Ada showed her gift for mathematics at an early age. She translated an article on an invention by Charles Babbage, and added her own comments. Because she introduced many computer concepts, Ada is considered the first computer programmer.', 'time':'1815-1852', 'achieve': 'First computer programmer.', 'coordinate': new google.maps.LatLng(53.1250165,-1.2669593), 'center': new google.maps.LatLng(53.1250165,-1.2669593), 'zoom': 14, 'type': "age1", 'image': 'http://www.maximumpc.com/files/u112496/ada_lovelace1_sm.jpg'}, 
+
+  {'name': 'Mary Kenneth Keller', 'text': 'Although Barbara Liskov is often named as the first woman to be awarded a Ph.D. in computer science, that honor actually goes to Sister Keller who beat Liskov to the punch by three years. Afterward, Sister Keller founded the computer science department at Clarke College in Iowa, which she directed for 20 years. She was passionate about providing access and information to everyone, not just computer scientists. She also envisioned a world in which computers made people smarter and learned to think on their own.', 'time':'1914-1985', 'achieve': 'First computer science Ph.D.', 'coordinate': new google.maps.LatLng(43.076592,-89.412488), 'center': new google.maps.LatLng(43.076592,-89.412488), 'zoom': 12, 'type': "age1", 'image': 'https://www.women.cs.cmu.edu/ada/Resources/Women/pictures/mary_keller.png'}, 
+  
+    {'name': 'Grace Hopper', 'text': 'Admiral Hopper, was not only one of the first female programmers, but also the first woman to graduate from Yale with a Ph.D in mathematics AND the first woman to reach the rank of Admiral in the U.S. Navy. In addition to inventing the first computer complier in 1952, Admiral Hopper developed COBOL (Common Business-Oriented Language), was credited with popularizing the term “bug” and “debugging” – reportedly when she had to remove a moth from the inside of a computer, was instrumental in the creation of FLOW-MATIC language for the UNIVAC I and UNIVAC II computers', 'time':'1906-1992', 'achieve': 'Developed COBOL', 'coordinate': new google.maps.LatLng(42.3867033,-71.0991076), 'center': new google.maps.LatLng(42.3867033,-71.0991076), 'zoom': 12, 'type': "age1", 'image': 'http://www.apprendre-math.info/history/photos/Hopper.jpeg'}, 
+
+    {'name': 'Karen Spärck Jones', 'text': 'She is considered a founder of information retrieval. With a long history in experimental investigations of human language, she was the originator of the Inverse Document Frequency measure in information retrieval which is nearly ubiquitously used as part of the measure of the importance of various words contained in documents when searching for information – which is still used in most search engines today. She was also at one time president of the Association for Computation Linguistics.', 'time':'1974-2002', 'achieve': 'Pioneer in information retrieval', 'coordinate': new google.maps.LatLng(52.2109765,0.0917991), 'center': new google.maps.LatLng(52.2109765,0.0917991), 'zoom': 16, 'type': "age2", 'image': 'http://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Karen_Sp%C3%A4rck.jpg/220px-Karen_Sp%C3%A4rck.jpg'}, 
+
+    {'name': 'Radia Perlman', 'text': 'Often referred to as the Mother of the Internet, Perlman is a software designer and network engineer who is most famous for her invention of the spanning-tree protocol. Perlman, who developed spanning-tree while working for Digital Equipment Corp, holds a Bachelor’s and Master’s in Mathematics and a Ph.D in Computer Science from MIT.', 'time':'1951-', 'achieve': 'Inventor of spanning-tree protocol', 'coordinate': new google.maps.LatLng(42.3602337,-71.0939454), 'center': new google.maps.LatLng(42.3602337,-71.0939454), 'zoom': 16, 'type': "age2", 'image': 'http://www.maximumpc.com/files/u112496/perlman2.jpg'}, 
+
+    {'name': 'Sheryl Sandberg', 'text': 'Facebook Chief Operating Officer Sheryl Sandberg knows how to command attention. In 2013 she wrote bestseller, "Lean In". She has a vast experience at top-notch firms and has also worked with Google as the Vice President of Global Online Sales & Operations. She started her career with McKinsey & Company and has also served as chief of staff for the United States Secretary of the Treasury.', 'time':'1969-', 'achieve': 'COO at Facebook', 'coordinate': new google.maps.LatLng(37.485074,-122.148814), 'center': new google.maps.LatLng(37.485074,-122.148814), 'zoom': 17, 'type': "age3", 'image': 'https://dzftds8z9s83c.cloudfront.net/office_hours_events/posters/production/80/video/Sheryl.Sandberg-crop.jpg?1376354405'}, 
+
+    {'name': 'Virginia Rometty', 'text': 'At the helm of IBM since Jan. 2012, Rometty is the first woman to lead the company. Not only does she lead the world’s biggest computer company in terms of revenue ($104.5 billion annually), she also knows when to make sacrifices. IBM’s revs dipped in the fourth quarter of 2013 for the seventh quarter in a row, and Rometty decided not to take a bonus. Her senior team followed suit.',  'time':'1957-', 'achieve': 'CEO at IBM', 'coordinate': new google.maps.LatLng(41.1065064,-73.7240558), 'center': new google.maps.LatLng(41.1065064,-73.7240558), 'zoom': 17, 'type': "age3", 'image': 'http://cdn.pastemagazine.com/www/blogs/lists/Ginni_Rometty_at_the_Fortune_MPW_Summit_in_2011.jpg'},
+    
+    {'name': 'Susan Wojcicki', 'text': 'Susan Wojcicki is Harvard-educated, runs one of the five most popular websites on the Internet and is a mother to four children. Before that, she was the ad queen at Google, managing the ins and outs of AdWords, AdSense, DoubleClick and Google Analytics. And, she’s the mastermind behind Google Images. Wojcicki is deeply rooted in some of the most foundational areas of the Internet.',  'time':'1968-', 'achieve': 'CEO at YouTube', 'coordinate': new google.maps.LatLng(37.422,-122.084058), 'center': new google.maps.LatLng(37.422,-122.084058), 'zoom': 17, 'type': "age3", 'image': 'http://extras.mnginteractive.com/live/media/site568/2014/0205/20140205__0206youtube~1.JPG'},
+
+    {'name': 'Susan Wojcicki', 'text': 'Susan Wojcicki is Harvard-educated, runs one of the five most popular websites on the Internet and is a mother to four children. Before that, she was the ad queen at Google, managing the ins and outs of AdWords, AdSense, DoubleClick and Google Analytics. And, she’s the mastermind behind Google Images. Wojcicki is deeply rooted in some of the most foundational areas of the Internet.',  'time':'1968-', 'achieve': 'CEO at YouTube', 'coordinate': new google.maps.LatLng(37.422,-122.084058), 'center': new google.maps.LatLng(37.422,-122.084058), 'zoom': 17, 'type': "age3", 'image': 'http://extras.mnginteractive.com/live/media/site568/2014/0205/20140205__0206youtube~1.JPG'},
+
+    {'name': 'Meg Whitman', 'text': 'A Princeton graduate with a MBA from Harvard, Whitman worked at toymakers Hasbro, shoe company Stride Rite Corporation and the Walt Disney Company before landing as CEO of eBay in 1998. Joining in its infancy, Whitman served as chief executive for ten years; lucrative shares of the online retailer still comprise a chunk of her roughly $2 billion fortune. Whitman joined Hewlett-Packard in 2011 as CEO; she received $19.6 million in compensation in 2014. Following Hewlett-Packard\'s impending split into two separate publicly traded companies, Whitman will remain CEO of corporate computing company Hewlett-Packard Enterprise while Dion Wesler will head up HP Inc., the printing and PC company.',  'time':'1956-', 'achieve': 'CEO at HP', 'coordinate': new google.maps.LatLng(37.4147208,-122.1450329), 'center': new google.maps.LatLng(37.4147208,-122.1450329), 'zoom': 17, 'type': "age3", 'image': 'http://www.josephrosenfeld.com/wp-content/uploads/2013/08/Meg_Whitman_3.jpg'},
+
+    {'name': 'Marissa Mayer', 'text': 'Marissa Mayer puts up with a lot. A Google transplant, the blue-eyed blonde exec is constantly taking heat for the way she is attempting to lead the struggling Yahoo back to the top. Despite the company’s advertising revenue woes, Mayer has consistently sought growth and innovation at Yahoo. Snatching up Tumblr for $1.1 billion, launching Yahoo Tech and Yahoo Food, doubling down on mobile efforts and trying to become the next Netflix are just a few of the endeavors Mayer can count on her watch. Yahoo may not be more relevant than Google or Facebook right now, but they’re certainly putting up a good fight under Mayer.',  'time':'1975-', 'achieve': 'CEO at Yahoo', 'coordinate': new google.maps.LatLng(37.41615,-122.024757), 'center': new google.maps.LatLng(37.41615,-122.024757), 'zoom': 17, 'type': "age3", 'image': 'http://cdn.pastemagazine.com/www/blogs/lists/MarissaMayerYahoo.jpg'},
+
+    {'name': 'Women Teachmakers | GDG Indore', 'text': 'Women Techmakers is Google’s global program and brand for women in technology. Kicked off in 2012 by then VP of Google[x] Megan Smith, Women Techmakers is now led by Women in Technology Advocate Natalie Villalobos and a global team of Googlers who are passionate about empowering women in technology through increased visibility, community, and resources. International Women\'s Day is an important moment to recognize how women have influenced the tech industry and beyond.',  'time':'21st March 2015', 'achieve': '<a href="http://bit.ly/wtmregister">Register here</a>', 'coordinate': new google.maps.LatLng(22.714422,75.863639), 'center': new google.maps.LatLng(22.714422,75.863639), 'zoom': 17, 'type': "age3", 'image': 'http://www.devfest.cz/img/women-techmakers/logo_wtm.png'}
+
+
+  ];
+
+
+function getContent(){
+
+  var contentString = '<div id="content">'+
+      '<div id="siteNotice">'+
+      '</div>'+
+      '<h1>'+details[travelled].name+'</h1>'+
+      '<div id="bodyContent row">'+
+      '<div class="col-md-9">'+
+      ''+details[travelled].text+''+
+    '<br>'+
+      '<span style="font-size: 25px;">Year: '+details[travelled].time+'</span>'+
+   ' <br>'+
+     ' <span style="font-size: 17px;">'+details[travelled].achieve+'</span>'+
+   ' </div>'+
+
+  '<div class="col-md-3" style="background-image:url(\''+details[travelled].image+'\');height: 142px;background-size: cover;   background-repeat: no-repeat;   ">'+
+  
+  
+'</div>'+
+'</div>';
+
+return contentString;
+
+}
+
+function initialize() {
+
+  var AdaLovelace = new google.maps.LatLng(53.1875303,-1.2678176);
+
+  
+  var mapOptions = {
+    zoom: 14,
+    center: AdaLovelace
+  };
+
+  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+  infowindow = new google.maps.InfoWindow({
+      content: getContent()
+  });
+
+  marker = new google.maps.Marker({
+      position: AdaLovelace,
+      map: map,
+      icon: "marker.png",
+      title: 'WomenTeachmakers'
+  });
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.open(map,marker);
+  });
+  infowindow.open(map,marker);
+  $("#womanName").html(details[travelled].name);
+  map.mapTypes.set('blackwhite', blackWhiteStyle);
+  map.setMapTypeId('blackwhite');
+
+}
+
+$(document).ready(function(){
+  $("#startModel").click();
+  $("#nextBtn").click(function(){
+    travelled++;
+    infowindow.close();
+    marker.setOptions({position: details[travelled].coordinate});
+
+    //map.setZoom(3);
+    map.panTo(details[travelled].coordinate);
+    //map.setZoom(15);
+    infowindow.setOptions({content: getContent()});
+    infowindow.open(map,marker);
+    $("#womanName").html(details[travelled].name);
+    // google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
+
+    // });
+
+    changeLayout();
+
+  });
+
+  $("#previousBtn").click(function(){
+    //console.log("Hello");
+    travelled--;
+    infowindow.close();
+    marker.setOptions({position: details[travelled].coordinate});
+
+    //map.setZoom(3);
+    map.panTo(details[travelled].coordinate);
+    //map.setZoom(15);
+    infowindow.setOptions({content: getContent()});
+    infowindow.open(map,marker);
+    $("#womanName").html(details[travelled].name);
+    // google.maps.event.addListenerOnce(map, 'tilesloaded', function(){
+        
+      
+    // });
+
+    changeLayout();
+    
+  });  
+
+});
+
+
+function changeLayout(){
+   if(details[travelled].type=="age1"){
+      //console.log("age "+map.getMapTypeId());
+      if(map.getMapTypeId()!="blackwhite"){
+        map.mapTypes.set('blackwhite', blackWhiteStyle);
+        map.setMapTypeId('blackwhite');
+        $("#mainheader").removeClass("mainheader_middle").removeClass("mainheader_mordern").addClass("mainheader_bw");
+      }
+      
+    }else if(details[travelled].type=="age2"){
+      if(map.getMapTypeId()!="middleage"){
+        map.mapTypes.set('middleage', middleAgeStyle);
+        map.setMapTypeId('middleage');
+        $("#mainheader").removeClass("mainheader_bw").removeClass("mainheader_mordern").addClass("mainheader_middle");
+      }
+    }else if(details[travelled].type=="age3"){
+      if(map.getMapTypeId()!="mordernage"){
+        map.mapTypes.set('mordernage', mordernAgeStyle);
+        map.setMapTypeId('mordernage');
+        $("#mainheader").removeClass("mainheader_bw").removeClass("mainheader_middle").addClass("mainheader_mordern");
+      }
+    }
+}
+
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+  </head>
+  <body>
+  <div id="mainheader" class="myfont mainheader_bw" style="height:20%; position: relative" >
+    <div class="myfont" style="font-size: 40px;">
+        Most Significant Women
+    </div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="startModel" style="display:none;">
+      Launch!
+    </button>
+
+    <span style="font-size:20px;">in history and current in tech</span>
+
+    <a href="https://www.facebook.com/events/409375029237804/"><div style="position: absolute; right: 5%; bottom:3%">Women Techmakers | Google Developers Group, Indore</div></a>
+
+    <div class="text-center">
+      
+      <i id="previousBtn" style="margin-right: 40px; font-size:30px;" class="glyphicon glyphicon-chevron-left"></i>
+      
+        <span id="womanName" style="font-size:30px;">Suyash Dixit</span>
+      
+      <i id="nextBtn" style="margin-left: 40px; font-size:30px;" class="glyphicon glyphicon-chevron-right"></i>
+    
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Significant women in tech : GDG Indore</h4>
+          </div>
+          <div class="modal-body">
+            Welcome to a showcase of some of the most significant women that world has encountered on a map. They created history, they are bringing new era. They made our lives better and simpler by their researches, skills and management.
+            <br>
+            <a href="https://www.facebook.com/events/409375029237804/">We are here to inspire new women engineers to do great stuffs.</a>
+            <br>
+            <br>
+            Use next/previous buttons to see profiles. 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Roll on!</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+  
+  <div id="map-canvas" style="height:80%; background: black;"></div>
+  </body>
+</html>
